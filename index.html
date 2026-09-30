@@ -1,0 +1,2463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FraudShield AI</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+
+    <!-- =====================================================
+         INVESTIGATION DASHBOARD STYLE
+    ====================================================== -->
+
+    <style>
+
+        /* =================================================
+           INVESTIGATION SECTION
+        ================================================= */
+
+        .fs-investigation {
+            padding-top: 70px;
+            padding-bottom: 90px;
+        }
+
+        .fs-investigation-header {
+            margin-bottom: 28px;
+        }
+
+        .fs-investigation-header p {
+            max-width: 680px;
+        }
+
+
+        /* =================================================
+           CASE OVERVIEW
+        ================================================= */
+
+        .fs-case-overview {
+
+            display: grid;
+
+            grid-template-columns:
+                2fr
+                1fr
+                1fr
+                1.2fr;
+
+            background: #081722;
+
+            border: 1px solid rgba(110, 150, 170, 0.16);
+
+            border-radius: 14px;
+
+            overflow: hidden;
+
+            margin-bottom: 18px;
+        }
+
+
+        .fs-case-main,
+        .fs-case-stat {
+
+            padding: 21px;
+
+            background: #081722;
+        }
+
+
+        .fs-case-main {
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+        }
+
+
+        .fs-case-stat {
+
+            border-left: 1px solid rgba(110, 150, 170, 0.10);
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+        }
+
+
+        .fs-small-label {
+
+            color: #6f8999;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: 1.1px;
+
+            text-transform: uppercase;
+        }
+
+
+        .fs-case-main h3 {
+
+            margin: 7px 0 10px;
+
+            color: #f2f7f9;
+
+            font-size: 20px;
+
+            font-weight: 600;
+        }
+
+
+        .fs-case-stat span {
+
+            color: #6f8999;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+        }
+
+
+        .fs-case-stat strong {
+
+            margin-top: 7px;
+
+            color: #e8f2f5;
+
+            font-size: 16px;
+
+            font-weight: 600;
+        }
+
+
+        /* =================================================
+           RISK BADGE
+        ================================================= */
+
+        .fs-risk-badge {
+
+            width: fit-content;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            padding: 5px 11px;
+
+            border-radius: 20px;
+
+            background: rgba(97, 217, 255, 0.06);
+
+            border: 1px solid rgba(97, 217, 255, 0.15);
+
+            color: #91aab5;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            letter-spacing: 0.9px;
+
+            text-transform: uppercase;
+        }
+
+
+        /* =================================================
+           TWO COLUMN CARDS
+        ================================================= */
+
+        .fs-investigation-row {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 18px;
+
+            margin-bottom: 18px;
+        }
+
+
+        /* =================================================
+           INVESTIGATION CARD
+        ================================================= */
+
+        .fs-investigation-card {
+
+            background: #081722;
+
+            border: 1px solid rgba(110, 150, 170, 0.15);
+
+            border-radius: 14px;
+
+            padding: 21px;
+
+            min-width: 0;
+        }
+
+
+        .fs-investigation-card:hover {
+
+            border-color: rgba(97, 217, 255, 0.22);
+        }
+
+
+        /* =================================================
+           CARD HEADER
+        ================================================= */
+
+        .fs-card-header {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .fs-card-icon {
+
+            width: 38px;
+
+            height: 38px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background: rgba(97, 217, 255, 0.06);
+
+            border: 1px solid rgba(97, 217, 255, 0.12);
+
+            color: #61d9ff;
+        }
+
+
+        .fs-card-icon svg {
+
+            width: 18px;
+
+            height: 18px;
+        }
+
+
+        .fs-card-header span {
+
+            display: block;
+
+            margin-bottom: 3px;
+
+            color: #6f8999;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+        }
+
+
+        .fs-card-header h3 {
+
+            margin: 0;
+
+            color: #edf5f7;
+
+            font-size: 17px;
+
+            font-weight: 600;
+        }
+
+
+        /* =================================================
+           CONTENT
+        ================================================= */
+
+        .fs-investigation-content {
+
+            min-height: 120px;
+
+            padding: 16px;
+
+            border-radius: 10px;
+
+            background: rgba(3, 12, 20, 0.35);
+
+            border: 1px solid rgba(110, 150, 170, 0.08);
+
+            color: #a8bac4;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+
+            overflow-wrap: anywhere;
+        }
+
+
+        /* =================================================
+           EMPTY STATE
+        ================================================= */
+
+        .fs-empty {
+
+            min-height: 88px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+        }
+
+
+        .fs-empty svg {
+
+            width: 22px;
+
+            height: 22px;
+
+            margin-bottom: 8px;
+
+            color: #4e7182;
+        }
+
+
+        .fs-empty strong {
+
+            color: #9cafb9;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+
+        .fs-empty p {
+
+            max-width: 310px;
+
+            margin: 5px 0 0;
+
+            color: #5f7786;
+
+            font-size: 10px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =================================================
+           EXPLANATION
+        ================================================= */
+
+        .fs-explanation {
+
+            margin-top: 0;
+
+            margin-bottom: 0;
+        }
+
+
+        .fs-explanation .fs-investigation-content {
+
+            min-height: 105px;
+        }
+
+
+        /* =================================================
+           REAL DATA SUPPORT
+        ================================================= */
+
+        .fs-investigation-content ul {
+
+            margin: 0;
+
+            padding-left: 18px;
+        }
+
+
+        .fs-investigation-content li {
+
+            margin-bottom: 7px;
+
+            color: #a9bdc7;
+        }
+
+
+        .fs-investigation-content strong {
+
+            color: #dce9ed;
+        }
+
+
+        /* =================================================
+           MOBILE
+        ================================================= */
+
+        @media (max-width: 900px) {
+
+            .fs-case-overview {
+
+                grid-template-columns: 1fr 1fr;
+            }
+
+
+            .fs-case-main {
+
+                grid-column: span 2;
+            }
+
+
+            .fs-case-stat:nth-child(3) {
+
+                border-left: none;
+            }
+
+
+            .fs-investigation-row {
+
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .fs-case-overview {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .fs-case-main {
+
+                grid-column: span 1;
+            }
+
+
+            .fs-case-stat {
+
+                border-left: none;
+
+                border-top: 1px solid rgba(110, 150, 170, 0.10);
+            }
+
+
+            .fs-investigation {
+
+                padding-top: 50px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <span>FRAUD</span>SHIELD
+
+        </div>
+
+
+        <div class="nav-links">
+
+            <a href="#overview">
+                Overview
+            </a>
+
+            <a href="#analyzer">
+                Analyzer
+            </a>
+
+            <a href="#network">
+                Network
+            </a>
+
+            <a href="#history">
+                Case History
+            </a>
+
+            <a href="#investigation">
+                Investigation
+            </a>
+
+            <a href="#dsa">
+                DSA Engine
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section
+        id="overview"
+        class="hero">
+
+
+        <div class="hero-content">
+
+            <span class="section-tag">
+
+                DIGITAL FRAUD INTELLIGENCE
+
+            </span>
+
+
+            <h1>
+
+                Detect.
+                <br>
+                Analyze.
+                <br>
+                Protect.
+
+            </h1>
+
+
+            <p>
+
+                FraudShield analyzes suspicious messages, URLs,
+                UPI information, documents, images and voice
+                evidence using risk intelligence and data structures.
+
+            </p>
+
+
+            <button
+                onclick="scrollToAnalyzer()"
+                class="primary-btn">
+
+                Start Analysis
+
+            </button>
+
+        </div>
+
+
+
+        <div class="hero-score-card">
+
+            <div class="hero-score-title">
+
+                CURRENT RISK
+
+            </div>
+
+
+            <div
+                id="heroScore"
+                class="hero-score">
+
+                0
+
+            </div>
+
+
+            <div
+                id="heroRiskLevel"
+                class="hero-risk-level">
+
+                NO ANALYSIS
+
+            </div>
+
+
+            <div class="risk-bar">
+
+                <div
+                    id="heroRiskFill"
+                    class="risk-fill"
+                    style="width:0%">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ANALYZER
+    ====================================================== -->
+
+    <section
+        id="analyzer"
+        class="section">
+
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-tag">
+
+                    RISK ANALYZER
+
+                </span>
+
+
+                <h2>
+
+                    Analyze Suspicious Content
+
+                </h2>
+
+
+                <p>
+
+                    Select an input type and submit the suspicious
+                    content for risk assessment.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ANALYSIS MODES -->
+
+        <div class="mode-container">
+
+
+            <!-- MESSAGE -->
+
+            <button
+                class="mode-btn active"
+                onclick="selectMode('message', this)">
+
+                <i data-lucide="message-square"></i>
+
+                Message
+
+            </button>
+
+
+
+            <!-- URL -->
+
+            <button
+                class="mode-btn"
+                onclick="selectMode('url', this)">
+
+                <i data-lucide="link"></i>
+
+                URL
+
+            </button>
+
+
+
+            <!-- UPI -->
+
+            <button
+                class="mode-btn"
+                onclick="selectMode('upi', this)">
+
+                <i data-lucide="credit-card"></i>
+
+                UPI
+
+            </button>
+
+
+
+            <!-- PDF -->
+
+            <button
+                class="mode-btn"
+                onclick="selectMode('pdf', this)">
+
+                <i data-lucide="file-text"></i>
+
+                PDF
+
+            </button>
+
+
+
+            <!-- IMAGE -->
+
+            <button
+                class="mode-btn"
+                onclick="selectMode('image', this)">
+
+                <i data-lucide="image"></i>
+
+                Image
+
+            </button>
+
+
+
+            <!-- VOICE -->
+
+            <button
+                class="mode-btn"
+                onclick="selectMode('voice', this)">
+
+                <i data-lucide="mic"></i>
+
+                Voice
+
+            </button>
+
+        </div>
+
+
+
+        <!-- INPUT CARD -->
+
+        <div class="analyzer-card">
+
+
+            <div class="analyzer-header">
+
+                <div>
+
+                    <span class="section-tag">
+
+                        INPUT
+
+                    </span>
+
+
+                    <h3 id="modeTitle">
+
+                        Message Analysis
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- MESSAGE -->
+
+            <div
+                id="messageInput"
+                class="input-panel">
+
+                <textarea
+                    id="messageText"
+                    placeholder="Paste suspicious SMS, WhatsApp message, email or text here..."></textarea>
+
+            </div>
+
+
+
+            <!-- URL -->
+
+            <div
+                id="urlInput"
+                class="input-panel"
+                style="display:none">
+
+                <input
+                    type="text"
+                    id="urlText"
+                    placeholder="Enter suspicious URL...">
+
+            </div>
+
+
+
+            <!-- UPI -->
+
+            <div
+                id="upiInput"
+                class="input-panel"
+                style="display:none">
+
+                <input
+                    type="text"
+                    id="upiText"
+                    placeholder="Enter UPI ID...">
+
+                <input
+                    type="number"
+                    id="upiAmount"
+                    placeholder="Transaction amount">
+
+            </div>
+
+
+
+            <!-- PDF -->
+
+            <div
+                id="fileInput"
+                class="input-panel"
+                style="display:none">
+
+                <input
+                    type="file"
+                    id="uploadedFile"
+                    accept=".pdf,application/pdf">
+
+
+                <div id="uploadedFileName">
+
+                    No PDF selected
+
+                </div>
+
+
+                <div class="input-help">
+
+                    Upload a suspicious PDF document for analysis.
+
+                </div>
+
+            </div>
+
+
+
+            <!-- IMAGE -->
+
+            <div
+                id="imageInput"
+                class="input-panel"
+                style="display:none">
+
+                <input
+                    type="file"
+                    id="imageFile"
+                    accept="image/png,image/jpeg,image/jpg,image/webp">
+
+
+                <div id="imageFileName">
+
+                    No image selected
+
+                </div>
+
+
+                <div class="input-help">
+
+                    Upload a suspicious screenshot,
+                    payment screenshot or message image.
+
+                </div>
+
+            </div>
+
+
+
+            <!-- VOICE -->
+
+            <div
+                id="voiceInput"
+                class="input-panel"
+                style="display:none">
+
+
+                <div class="voice-upload-row">
+
+                    <input
+                        type="file"
+                        id="voiceFile"
+                        accept="audio/*">
+
+                </div>
+
+
+                <div id="voiceFileName">
+
+                    No audio selected
+
+                </div>
+
+
+                <div class="voice-controls">
+
+                    <button
+                        type="button"
+                        id="voiceStartBtn"
+                        class="secondary-btn"
+                        onclick="startVoiceRecording()">
+
+                        <i data-lucide="mic"></i>
+
+                        Start Voice Analysis
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="voiceStopBtn"
+                        class="secondary-btn"
+                        onclick="stopVoiceRecording()"
+                        style="display:none">
+
+                        <i data-lucide="square"></i>
+
+                        Stop
+
+                    </button>
+
+                </div>
+
+
+                <div class="input-help">
+
+                    Use microphone speech recognition
+                    to analyze a suspicious phone call or
+                    spoken scam message.
+
+                </div>
+
+
+                <div
+                    id="voiceStatus"
+                    class="voice-status">
+
+                    Ready for voice analysis.
+
+                </div>
+
+            </div>
+
+
+
+            <!-- BUTTONS -->
+
+            <div class="demo-row">
+
+                <button
+                    onclick="loadDemo()"
+                    class="secondary-btn">
+
+                    Load Demo
+
+                </button>
+
+
+                <button
+                    onclick="analyzeRisk()"
+                    class="primary-btn">
+
+                    Analyze Risk
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         RESULTS
+    ====================================================== -->
+
+    <section
+        id="results"
+        class="section">
+
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-tag">
+
+                    ANALYSIS RESULT
+
+                </span>
+
+
+                <h2>
+
+                    Risk Intelligence
+
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="result-grid">
+
+
+            <!-- SCORE -->
+
+            <div class="result-card score-card">
+
+                <div class="result-card-title">
+
+                    RISK SCORE
+
+                </div>
+
+
+                <div
+                    id="score"
+                    class="big-score">
+
+                    0
+
+                </div>
+
+
+                <div
+                    id="resultStatus"
+                    class="result-status">
+
+                    No analysis yet
+
+                </div>
+
+
+                <div class="risk-bar">
+
+                    <div
+                        id="resultRiskFill"
+                        class="risk-fill"
+                        style="width:0%">
+
+                    </div>
+
+                </div>
+
+
+                <p id="scoreMessage">
+
+                    Submit content to calculate risk.
+
+                </p>
+
+            </div>
+
+
+
+            <!-- SIGNALS -->
+
+            <div class="result-card">
+
+                <div class="result-card-title">
+
+                    DETECTED SIGNALS
+
+                </div>
+
+
+                <div
+                    id="signalsList"
+                    class="signals-list">
+
+                    No signals detected.
+
+                </div>
+
+
+                <div class="signal-count">
+
+                    Signals:
+
+                    <strong id="signalCount">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- BREAKDOWN -->
+
+            <div class="result-card">
+
+                <div class="result-card-title">
+
+                    RISK BREAKDOWN
+
+                </div>
+
+
+                <div
+                    id="riskBreakdownList"
+                    class="breakdown-list">
+
+                    No breakdown available.
+
+                </div>
+
+
+                <div class="breakdown-total">
+
+                    Total:
+
+                    <strong id="breakdownTotal">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- REASONS -->
+
+            <div class="result-card">
+
+                <div class="result-card-title">
+
+                    WHY THIS RESULT?
+
+                </div>
+
+
+                <div
+                    id="reasons"
+                    class="reasons-list">
+
+                    No reasons available.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ALGORITHM -->
+
+        <div class="algorithm-row">
+
+            <span>
+
+                Analysis Algorithm
+
+            </span>
+
+
+            <strong>
+
+                Rule-Based Risk Scoring + DSA Engine
+
+            </strong>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         INVESTIGATION DASHBOARD
+    ====================================================== -->
+
+    <section
+        id="investigation"
+        class="section fs-investigation">
+
+
+        <!-- HEADER -->
+
+        <div
+            class="section-header fs-investigation-header">
+
+            <div>
+
+                <span class="section-tag">
+
+                    CASE INVESTIGATION
+
+                </span>
+
+
+                <h2>
+
+                    Investigation Dashboard
+
+                </h2>
+
+
+                <p>
+
+                    A clear view of the latest analyzed case,
+                    detected signals, processing activity and
+                    connected entities.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- CASE OVERVIEW -->
+
+        <div class="fs-case-overview">
+
+
+            <!-- CASE -->
+
+            <div class="fs-case-main">
+
+                <span class="fs-small-label">
+
+                    CASE
+
+                </span>
+
+
+                <h3 id="investigationCaseId">
+
+                    No Case Loaded
+
+                </h3>
+
+
+                <span
+                    id="investigationRisk"
+                    class="fs-risk-badge">
+
+                    NO ANALYSIS
+
+                </span>
+
+            </div>
+
+
+
+            <!-- INPUT -->
+
+            <div class="fs-case-stat">
+
+                <span>
+
+                    INPUT TYPE
+
+                </span>
+
+
+                <strong id="investigationType">
+
+                    —
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- SCORE -->
+
+            <div class="fs-case-stat">
+
+                <span>
+
+                    RISK SCORE
+
+                </span>
+
+
+                <strong id="investigationScore">
+
+                    0/100
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- STATUS -->
+
+            <div class="fs-case-stat">
+
+                <span>
+
+                    STATUS
+
+                </span>
+
+
+                <strong id="investigationStatus">
+
+                    Awaiting analysis
+
+                </strong>
+
+
+                <span
+                    id="investigationTime"
+                    style="display:none">
+
+                    —
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- EVIDENCE + DETECTION -->
+
+        <div class="fs-investigation-row">
+
+
+            <!-- EVIDENCE -->
+
+            <div class="fs-investigation-card">
+
+
+                <div class="fs-card-header">
+
+                    <div class="fs-card-icon">
+
+                        <i data-lucide="file-search"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+
+                            EVIDENCE
+
+                        </span>
+
+
+                        <h3>
+
+                            Submitted Evidence
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="investigationEvidence"
+                    class="fs-investigation-content">
+
+
+                    <div class="fs-empty">
+
+                        <i data-lucide="inbox"></i>
+
+
+                        <strong>
+
+                            No evidence loaded
+
+                        </strong>
+
+
+                        <p>
+
+                            Submitted content will appear
+                            here after analysis.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- RISK INDICATORS -->
+
+            <div class="fs-investigation-card">
+
+
+                <div class="fs-card-header">
+
+                    <div class="fs-card-icon">
+
+                        <i data-lucide="shield-alert"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+
+                            DETECTION
+
+                        </span>
+
+
+                        <h3>
+
+                            Risk Indicators
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="investigationSignals"
+                    class="fs-investigation-content">
+
+
+                    <div class="fs-empty">
+
+                        <i data-lucide="scan-search"></i>
+
+
+                        <strong>
+
+                            No indicators detected
+
+                        </strong>
+
+
+                        <p>
+
+                            Suspicious signals will appear
+                            here after analysis.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- DSA + NETWORK -->
+
+        <div class="fs-investigation-row">
+
+
+            <!-- DSA -->
+
+            <div class="fs-investigation-card">
+
+
+                <div class="fs-card-header">
+
+                    <div class="fs-card-icon">
+
+                        <i data-lucide="cpu"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+
+                            PROCESSING
+
+                        </span>
+
+
+                        <h3>
+
+                            DSA Processing
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="investigationDSA"
+                    class="fs-investigation-content">
+
+
+                    <div class="fs-empty">
+
+                        <i data-lucide="database"></i>
+
+
+                        <strong>
+
+                            Waiting for analysis
+
+                        </strong>
+
+
+                        <p>
+
+                            DSA processing details will
+                            appear after analysis.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- NETWORK -->
+
+            <div class="fs-investigation-card">
+
+
+                <div class="fs-card-header">
+
+                    <div class="fs-card-icon">
+
+                        <i data-lucide="network"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+
+                            NETWORK
+
+                        </span>
+
+
+                        <h3>
+
+                            Entity Connections
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="investigationNetwork"
+                    class="fs-investigation-content">
+
+
+                    <div class="fs-empty">
+
+                        <i data-lucide="share-2"></i>
+
+
+                        <strong>
+
+                            No network data
+
+                        </strong>
+
+
+                        <p>
+
+                            Connected entities will appear
+                            after analysis.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- EXPLANATION -->
+
+        <div
+            class="fs-investigation-card fs-explanation">
+
+
+            <div class="fs-card-header">
+
+                <div class="fs-card-icon">
+
+                    <i data-lucide="lightbulb"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+
+                        EXPLAINABILITY
+
+                    </span>
+
+
+                    <h3>
+
+                        Why This Result?
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="investigationReasons"
+                class="fs-investigation-content">
+
+
+                <div class="fs-empty">
+
+                    <i data-lucide="message-circle"></i>
+
+
+                    <strong>
+
+                        No explanation available
+
+                    </strong>
+
+
+                    <p>
+
+                        The reasons behind the risk
+                        assessment will appear here.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FRAUD NETWORK
+    ====================================================== -->
+
+    <section
+        id="network"
+        class="section">
+
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-tag">
+
+                    NETWORK ANALYSIS
+
+                </span>
+
+
+                <h2>
+
+                    Fraud Network Graph
+
+                </h2>
+
+
+                <p>
+
+                    Visual representation of connected entities
+                    using Graph, BFS and DFS.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="network-dashboard">
+
+
+            <!-- GRAPH -->
+
+            <div
+                class="network-card network-visual-card">
+
+
+                <div class="network-card-header">
+
+                    <div>
+
+                        <h3>
+
+                            Entity Relationship Graph
+
+                        </h3>
+
+
+                        <span id="networkStatus">
+
+                            Waiting for analysis...
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="fraudNetworkCanvas"
+                    class="fraud-network-canvas">
+
+
+                    <div class="network-empty">
+
+                        <div class="network-empty-title">
+
+                            No Network Data
+
+                        </div>
+
+
+                        <p>
+
+                            Run an analysis to generate
+                            the fraud network.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- BFS -->
+
+            <div class="network-card">
+
+                <div class="network-card-header">
+
+                    <h3>
+
+                        BFS Traversal
+
+                    </h3>
+
+
+                    <span class="algorithm-label">
+
+                        Breadth First Search
+
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="networkBFS"
+                    class="traversal-list">
+
+                    <span class="empty-text">
+
+                        Waiting for analysis...
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- DFS -->
+
+            <div class="network-card">
+
+                <div class="network-card-header">
+
+                    <h3>
+
+                        DFS Traversal
+
+                    </h3>
+
+
+                    <span class="algorithm-label">
+
+                        Depth First Search
+
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="networkDFS"
+                    class="traversal-list">
+
+                    <span class="empty-text">
+
+                        Waiting for analysis...
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- NETWORK STATISTICS -->
+
+            <div class="network-card">
+
+
+                <div class="network-card-header">
+
+                    <h3>
+
+                        Network Statistics
+
+                    </h3>
+
+                </div>
+
+
+                <div class="network-stat">
+
+                    <span>
+
+                        Total Nodes
+
+                    </span>
+
+
+                    <strong id="networkNodes">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+
+                <div class="network-stat">
+
+                    <span>
+
+                        Total Connections
+
+                    </span>
+
+
+                    <strong id="networkEdges">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CASE HISTORY
+    ====================================================== -->
+
+    <section
+        id="history"
+        class="section">
+
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-tag">
+
+                    CASE MANAGEMENT
+
+                </span>
+
+
+                <h2>
+
+                    Analysis History
+
+                </h2>
+
+
+                <p>
+
+                    Previously analyzed cases are stored locally.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="history-toolbar">
+
+
+            <input
+                type="text"
+                id="caseSearch"
+                placeholder="Search cases..."
+                oninput="searchCases()">
+
+
+            <select
+                id="riskFilter"
+                onchange="searchCases()">
+
+                <option value="all">
+
+                    All Risk Levels
+
+                </option>
+
+
+                <option value="HIGH">
+
+                    High
+
+                </option>
+
+
+                <option value="MEDIUM">
+
+                    Medium
+
+                </option>
+
+
+                <option value="LOW">
+
+                    Low
+
+                </option>
+
+            </select>
+
+
+            <button
+                onclick="clearCaseHistory()"
+                class="secondary-btn">
+
+                Clear History
+
+            </button>
+
+        </div>
+
+
+
+        <div class="history-header">
+
+            <span>
+
+                Total Cases:
+
+            </span>
+
+
+            <strong id="caseCount">
+
+                0
+
+            </strong>
+
+        </div>
+
+
+
+        <div
+            id="caseHistoryList"
+            class="case-history-list">
+
+
+            <div class="empty-history">
+
+                No cases analyzed yet.
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         DSA ENGINE
+    ====================================================== -->
+
+    <section
+        id="dsa"
+        class="section">
+
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-tag">
+
+                    DATA STRUCTURES
+
+                </span>
+
+
+                <h2>
+
+                    DSA Fraud Intelligence Engine
+
+                </h2>
+
+
+                <p>
+
+                    Data structures used internally to organize,
+                    prioritize and analyze fraud evidence.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="dsa-grid">
+
+
+            <!-- SET -->
+
+            <div class="dsa-card">
+
+                <div class="dsa-icon">
+
+                    SET
+
+                </div>
+
+
+                <div
+                    class="dsa-value"
+                    id="dsaSet">
+
+                    Empty
+
+                </div>
+
+
+                <div class="dsa-purpose">
+
+                    Removes duplicate fraud signals.
+
+                </div>
+
+            </div>
+
+
+
+            <!-- STACK -->
+
+            <div class="dsa-card">
+
+                <div class="dsa-icon">
+
+                    STACK
+
+                </div>
+
+
+                <div
+                    class="dsa-value"
+                    id="dsaStack">
+
+                    Empty
+
+                </div>
+
+
+                <div class="dsa-purpose">
+
+                    Handles recent evidence.
+
+                </div>
+
+            </div>
+
+
+
+            <!-- QUEUE -->
+
+            <div class="dsa-card">
+
+                <div class="dsa-icon">
+
+                    QUEUE
+
+                </div>
+
+
+                <div
+                    class="dsa-value"
+                    id="dsaQueue">
+
+                    Empty
+
+                </div>
+
+
+                <div class="dsa-purpose">
+
+                    Manages incoming cases.
+
+                </div>
+
+            </div>
+
+
+
+            <!-- LINKED LIST -->
+
+            <div class="dsa-card">
+
+                <div class="dsa-icon">
+
+                    LINKED LIST
+
+                </div>
+
+
+                <div
+                    class="dsa-value"
+                    id="dsaLinkedList">
+
+                    Empty
+
+                </div>
+
+
+                <div class="dsa-purpose">
+
+                    Maintains analysis history.
+
+                </div>
+
+            </div>
+
+
+
+            <!-- HASH TABLE -->
+
+            <div class="dsa-card">
+
+                <div class="dsa-icon">
+
+                    HASH TABLE
+
+                </div>
+
+
+                <div
+                    class="dsa-value"
+                    id="dsaHash">
+
+                    Empty
+
+                </div>
+
+
+                <div class="dsa-purpose">
+
+                    Fast suspicious signal lookup.
+
+                </div>
+
+            </div>
+
+
+
+            <!-- MAX HEAP -->
+
+            <div class="dsa-card">
+
+                <div class="dsa-icon">
+
+                    MAX HEAP
+
+                </div>
+
+
+                <div
+                    class="dsa-value"
+                    id="dsaHeap">
+
+                    Empty
+
+                </div>
+
+
+                <div class="dsa-purpose">
+
+                    Prioritizes high-risk cases.
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TRIE -->
+
+            <div class="dsa-card dsa-wide">
+
+                <div class="dsa-icon">
+
+                    TRIE
+
+                </div>
+
+
+                <div
+                    class="dsa-value"
+                    id="dsaTrie">
+
+                    Empty
+
+                </div>
+
+
+                <div class="dsa-purpose">
+
+                    Searches known scam keywords efficiently.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- DSA FLOW -->
+
+        <div class="dsa-flow">
+
+            <div>
+
+                INPUT
+
+            </div>
+
+
+            <span>
+
+                →
+
+            </span>
+
+
+            <div>
+
+                STRING ANALYSIS
+
+            </div>
+
+
+            <span>
+
+                →
+
+            </span>
+
+
+            <div>
+
+                DSA ENGINE
+
+            </div>
+
+
+            <span>
+
+                →
+
+            </span>
+
+
+            <div>
+
+                RISK SCORE
+
+            </div>
+
+
+            <span>
+
+                →
+
+            </span>
+
+
+            <div>
+
+                NETWORK
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+
+        <div>
+
+            <strong>
+
+                FraudShield
+
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            DSA-Powered Digital Fraud Intelligence System
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="script.js"></script>
+
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                if (typeof lucide !== "undefined") {
+
+                    lucide.createIcons();
+
+                }
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>
